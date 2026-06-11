@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CBRE Emergency Contact Authorization Certificate</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { background: #f0f4f2; font-family: Arial, Helvetica, sans-serif; padding: 2rem 1rem 3rem; }
+    .wrapper { max-width: 720px; margin: 0 auto; }
+
+    /* ── Header ── */
+    .doc-header { background: #003F2D; border-radius: 10px 10px 0 0; padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; }
+    .cbre-badge { color: #fff; font-weight: 800; font-size: 22px; letter-spacing: 0.1em; }
+    .header-right { text-align: right; }
+    .header-title { color: #a8d5c2; font-size: 13px; letter-spacing: 0.04em; line-height: 1.4; }
+    .header-ref { color: #6aad92; font-size: 11px; margin-top: 3px; }
+
+    /* ── Form body ── */
+    .form-body { background: #fff; padding: 28px; border-radius: 0 0 10px 10px; border: 0.5px solid #c8d8d2; }
+    .notice { background: #eef5f1; border-left: 3px solid #003F2D; border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 12.5px; color: #374151; line-height: 1.65; margin-bottom: 26px; }
+    .notice strong { color: #003F2D; }
+    .section { margin-bottom: 26px; }
+    .section-heading { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #003F2D; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1.5px solid #003F2D; }
+    .row { display: grid; gap: 14px; margin-bottom: 14px; }
+    .row.two { grid-template-columns: 1fr 1fr; }
+    .row.one { grid-template-columns: 1fr; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 11.5px; font-weight: 600; color: #4b5563; }
+    .field label span { color: #dc2626; margin-left: 2px; }
+    .field input, .field select { font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; color: #111; background: #fff; border: 0.5px solid #d1d5db; border-radius: 6px; padding: 8px 10px; outline: none; transition: border-color 0.15s; width: 100%; }
+    .field input:focus, .field select:focus { border-color: #003F2D; box-shadow: 0 0 0 2px rgba(0,63,45,0.1); }
+    .rel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 4px; }
+    .rel-btn { padding: 9px 6px; border: 0.5px solid #d1d5db; border-radius: 6px; background: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 12px; text-align: center; cursor: pointer; color: #6b7280; transition: all 0.15s; }
+    .rel-btn:hover { background: #f0f4f2; border-color: #003F2D; color: #003F2D; }
+    .rel-btn.active { border: 1.5px solid #003F2D; background: #eef5f1; color: #003F2D; font-weight: 600; }
+    .divider { border: none; border-top: 0.5px solid #e5e7eb; margin: 6px 0 24px; }
+    .sig-box { border: 1.5px dashed #c8d8d2; border-radius: 8px; padding: 22px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fff; }
+    .sig-box:hover { border-color: #003F2D; background: #f5faf7; }
+    .sig-box.has-file { border-style: solid; border-color: #003F2D; background: #eef5f1; }
+    .sig-main { font-size: 13px; color: #374151; }
+    .sig-main strong { color: #003F2D; }
+    .sig-hint { font-size: 11px; color: #9ca3af; margin-top: 5px; }
+    .sig-preview-text { font-size: 13px; color: #003F2D; font-weight: 600; }
+    .footer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; }
+    .cancel-link { font-size: 13px; color: #9ca3af; background: none; border: none; cursor: pointer; font-family: Arial, Helvetica, sans-serif; }
+    .footer-right { display: flex; align-items: center; gap: 14px; }
+    .date-stamp { font-size: 11px; color: #9ca3af; }
+    .submit-btn { background: #003F2D; color: #fff; border: none; padding: 11px 30px; border-radius: 7px; font-family: Arial, Helvetica, sans-serif; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; gap: 8px; }
+    .submit-btn:hover { background: #00563D; }
+    .error-banner { background: #fef2f2; border: 0.5px solid #fca5a5; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #dc2626; margin-bottom: 16px; display: none; }
+    #fileInput { display: none; }
+
+    /* ── Certificate ── */
+    #certView { display: none; }
+    .cert-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+    .cert-btn { padding: 10px 24px; border-radius: 7px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: background 0.15s; }
+    .cert-btn.primary { background: #003F2D; color: #fff; }
+    .cert-btn.primary:hover { background: #00563D; }
+    .cert-btn.secondary { background: #fff; color: #003F2D; border: 1.5px solid #003F2D; }
+    .cert-btn.secondary:hover { background: #eef5f1; }
+
+    .certificate { background: #fff; border: 2px solid #003F2D; border-radius: 10px; padding: 0; overflow: hidden; position: relative; }
+    .cert-top-bar { background: #003F2D; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 70px; }
+    .cert-logo { color: #fff; font-weight: 800; font-size: 26px; letter-spacing: 0.12em; }
+    .cert-top-right { text-align: right; }
+    .cert-top-title { color: #a8d5c2; font-size: 12px; letter-spacing: 0.06em; }
+    .cert-ref-no { color: #6aad92; font-size: 11px; margin-top: 2px; }
+
+    .cert-body { padding: 32px 40px 28px; }
+    .cert-title { text-align: center; margin-bottom: 24px; }
+    .cert-title h1 { font-size: 20px; font-weight: 700; color: #003F2D; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+    .cert-title p { font-size: 12px; color: #6b7280; letter-spacing: 0.06em; }
+
+    .cert-declare { font-family: Georgia, serif; font-size: 13.5px; color: #374151; line-height: 1.85; text-align: center; margin-bottom: 28px; padding: 0 20px; }
+    .cert-declare strong { color: #003F2D; }
+
+    .cert-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 32px; margin-bottom: 28px; }
+    .cert-field { border-bottom: 1px solid #d1fae5; padding-bottom: 8px; }
+    .cert-field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin-bottom: 4px; }
+    .cert-field-val { font-size: 14px; color: #111; font-weight: 500; min-height: 20px; }
+
+    .cert-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: end; margin-top: 8px; padding-top: 20px; border-top: 0.5px solid #d1fae5; }
+    .cert-sig { text-align: center; }
+    .cert-sig-line { border-bottom: 1.5px solid #003F2D; margin-bottom: 6px; height: 40px; display: flex; align-items: flex-end; justify-content: center; }
+    .cert-sig-img { max-height: 36px; max-width: 120px; object-fit: contain; }
+    .cert-sig-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; }
+    .cert-sig-name { font-size: 12px; color: #374151; margin-top: 2px; }
+
+    .cert-seal { text-align: center; }
+    .seal-svg { width: 90px; height: 90px; margin: 0 auto; }
+
+    .cert-footer-bar { background: #003F2D; padding: 8px 40px; display: flex; align-items: center; justify-content: space-between; }
+    .cert-footer-text { color: #6aad92; font-size: 10px; letter-spacing: 0.05em; }
+
+    @media (max-width: 540px) {
+      .row.two, .cert-fields, .cert-bottom { grid-template-columns: 1fr; }
+      .rel-grid { grid-template-columns: repeat(2,1fr); }
+    }
+
+    /* ── Print styles ── */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+      .wrapper { max-width: 100% !important; }
+      #formView, .cert-actions, .doc-header { display: none !important; }
+      #certView { display: block !important; }
+      .certificate { border: 2px solid #003F2D !important; page-break-inside: avoid; }
+      @page { size: A4 landscape; margin: 10mm; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- PAGE HEADER -->
+  <div class="doc-header">
+    <div class="cbre-badge">CBRE</div>
+    <div class="header-right">
+      <div class="header-title">Emergency Contact Authorization<br>Property &amp; Facilities Management</div>
+      <div class="header-ref" id="headerRef">CBRE-AUTH-—</div>
+    </div>
+  </div>
+
+  <!-- FORM VIEW -->
+  <div class="form-body" id="formView">
+
+    <div class="notice">
+      <strong>Purpose:</strong> This certificate authorizes a named emergency contact as an approved visitor for the individual listed. Fill in all required fields to generate the printable certificate.
+    </div>
+
+    <div class="error-banner" id="errorBanner"></div>
+
+    <div class="section">
+      <p class="section-heading">Individual details</p>
+      <div class="row two">
+        <div class="field"><label>First name <span>*</span></label><input type="text" id="indFirst" placeholder="First name" /></div>
+        <div class="field"><label>Last name <span>*</span></label><input type="text" id="indLast" placeholder="Last name" /></div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section">
+      <p class="section-heading">Emergency contact details</p>
+      <div class="row two">
+        <div class="field"><label>First name <span>*</span></label><input type="text" id="ecFirst" placeholder="First name" /></div>
+        <div class="field"><label>Last name <span>*</span></label><input type="text" id="ecLast" placeholder="Last name" /></div>
+      </div>
+      <div class="row one">
+        <div class="field">
+          <label>Relationship <span>*</span></label>
+          <div class="rel-grid">
+            <button class="rel-btn" onclick="setRel(this)">Spouse / Partner</button>
+            <button class="rel-btn" onclick="setRel(this)">Parent</button>
+            <button class="rel-btn" onclick="setRel(this)">Sibling</button>
+            <button class="rel-btn" onclick="setRel(this)">Other</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section">
+      <p class="section-heading">Authorization details</p>
+      <div class="row two">
+        <div class="field"><label>Effective date <span>*</span></label><input type="date" id="effDate" /></div>
+        <div class="field"><label>Expiration date</label><input type="date" id="expDate" /></div>
+      </div>
+      <div class="row two">
+        <div class="field"><label>Approving authority name <span>*</span></label><input type="text" id="authName" placeholder="Full name of approving officer" /></div>
+        <div class="field"><label>Approving authority title</label><input type="text" id="authTitle" placeholder="e.g. Facilities Manager" /></div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section">
+      <p class="section-heading">Signature of approving authority</p>
+      <div class="sig-box" id="sigBox" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)" />
+        <svg style="width:36px;height:36px;margin:0 auto 10px;" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="8" fill="#eef5f1"/>
+          <path d="M18 24V14M13 18l5-5 5 5" stroke="#003F2D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 26h12" stroke="#003F2D" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div class="sig-main" id="sigMain"><strong>Upload signature image</strong> &nbsp;or click to browse</div>
+        <div class="sig-hint" id="sigHint">PNG or JPG &nbsp;·&nbsp; Max 2 MB</div>
+      </div>
+    </div>
+
+    <div class="footer-row">
+      <button class="cancel-link" onclick="window.location.reload()">Cancel</button>
+      <div class="footer-right">
+        <span class="date-stamp" id="dateStamp"></span>
+        <button class="submit-btn" onclick="generateCert()">Generate certificate</button>
+      </div>
+    </div>
+
+  </div>
+  <!-- END FORM VIEW -->
+
+  <!-- CERTIFICATE VIEW -->
+  <div id="certView">
+
+    <div class="cert-actions">
+      <button class="cert-btn primary" onclick="window.print()">&#128438; Save / Print as PDF</button>
+      <button class="cert-btn secondary" onclick="goBack()">&#8592; Edit details</button>
+    </div>
+
+    <div class="certificate">
+
+      <div class="cert-top-bar">
+        <div class="cert-logo">CBRE</div>
+        <div class="cert-top-right">
+          <div class="cert-top-title">Emergency Contact Authorization Certificate</div>
+          <div class="cert-ref-no" id="certRefDisplay"></div>
+        </div>
+      </div>
+
+      <div class="cert-body">
+
+        <div class="cert-title">
+          <h1>Authorization Certificate</h1>
+          <p>Emergency Contact &amp; Authorized Visitor Designation</p>
+        </div>
+
+        <div class="cert-declare">
+          This document certifies that <strong id="c-ecName">&nbsp;</strong> has been designated as an approved emergency contact and authorized visitor for <strong id="c-indName">&nbsp;</strong>. The holder may request visitation access in accordance with facility policies and procedures. This authorization remains valid unless revoked by the individual or the organization.
+        </div>
+
+        <div class="cert-fields">
+          <div class="cert-field">
+            <div class="cert-field-label">Individual</div>
+            <div class="cert-field-val" id="c-ind"></div>
+          </div>
+          <div class="cert-field">
+            <div class="cert-field-label">Emergency contact</div>
+            <div class="cert-field-val" id="c-ec"></div>
+          </div>
+          <div class="cert-field">
+            <div class="cert-field-label">Relationship</div>
+            <div class="cert-field-val" id="c-rel"></div>
+          </div>
+          <div class="cert-field">
+            <div class="cert-field-label">Authorization reference</div>
+            <div class="cert-field-val" id="c-ref"></div>
+          </div>
+          <div class="cert-field">
+            <div class="cert-field-label">Effective date</div>
+            <div class="cert-field-val" id="c-eff"></div>
+          </div>
+          <div class="cert-field">
+            <div class="cert-field-label">Expiration date</div>
+            <div class="cert-field-val" id="c-exp"></div>
+          </div>
+        </div>
+
+        <div class="cert-bottom">
+          <div class="cert-sig">
+            <div class="cert-sig-line">
+              <img id="c-sigImg" class="cert-sig-img" src="" alt="Signature" style="display:none;" />
+            </div>
+            <div class="cert-sig-label">Signature of approving authority</div>
+            <div class="cert-sig-name" id="c-authName"></div>
+            <div class="cert-sig-name" style="color:#9ca3af;font-size:11px;" id="c-authTitle"></div>
+          </div>
+
+          <div class="cert-seal">
+            <svg class="seal-svg" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="45" cy="45" r="43" stroke="#003F2D" stroke-width="2"/>
+              <circle cx="45" cy="45" r="36" stroke="#003F2D" stroke-width="0.8"/>
+              <path d="M45 16 L47.5 24 L56 24 L49.5 29 L52 37 L45 32 L38 37 L40.5 29 L34 24 L42.5 24 Z" fill="#003F2D"/>
+              <text x="45" y="52" text-anchor="middle" font-family="Arial" font-weight="700" font-size="9" fill="#003F2D" letter-spacing="1">CBRE</text>
+              <text x="45" y="63" text-anchor="middle" font-family="Arial" font-size="6.5" fill="#003F2D" letter-spacing="0.5">AUTHORIZED</text>
+              <path d="M 15 45 A 30 30 0 0 1 75 45" stroke="#003F2D" stroke-width="0.5" fill="none"/>
+              <text font-family="Arial" font-size="6" fill="#003F2D" letter-spacing="2">
+                <textPath href="#topArc">PROPERTY &amp; FACILITIES</textPath>
+              </text>
+              <defs>
+                <path id="topArc" d="M 12 45 A 33 33 0 0 1 78 45"/>
+              </defs>
+              <text font-family="Arial" font-size="6" fill="#003F2D" letter-spacing="1.5">
+                <textPath href="#btmArc">MANAGEMENT</textPath>
+              </text>
+              <defs>
+                <path id="btmArc" d="M 22 65 A 30 30 0 0 0 68 65"/>
+              </defs>
+            </svg>
+            <div style="font-size:10px;color:#9ca3af;margin-top:4px;">Official seal</div>
+          </div>
+
+          <div class="cert-sig">
+            <div class="cert-sig-line"></div>
+            <div class="cert-sig-label">Date of issue</div>
+            <div class="cert-sig-name" id="c-issued"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="cert-footer-bar">
+        <div class="cert-footer-text">CBRE Property &amp; Facilities Management &nbsp;·&nbsp; This certificate is issued subject to facility terms and conditions.</div>
+        <div class="cert-footer-text" id="c-footerRef"></div>
+      </div>
+
+    </div>
+
+  </div>
+  <!-- END CERTIFICATE VIEW -->
+
+</div>
+
+<script>
+(function () {
+  var ref = 'CBRE-AUTH-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+  document.getElementById('headerRef').textContent = ref;
+
+  function tick() {
+    var now = new Date();
+    document.getElementById('dateStamp').textContent =
+      now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+      ' · ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
+  tick(); setInterval(tick, 30000);
+
+  window._rel = '';
+  window._sigSrc = '';
+
+  window.setRel = function (btn) {
+    document.querySelectorAll('.rel-btn').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    window._rel = btn.textContent.trim();
+  };
+
+  window.handleFile = function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) { window._sigSrc = ev.target.result; };
+    reader.readAsDataURL(file);
+    document.getElementById('sigBox').classList.add('has-file');
+    document.getElementById('sigMain').innerHTML = '<span class="sig-preview-text">&#10003; ' + file.name + '</span>';
+    document.getElementById('sigHint').textContent = (file.size / 1024).toFixed(0) + ' KB · Click to replace';
+  };
+
+  function fmtDate(val) {
+    if (!val) return '—';
+    var d = new Date(val + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  window.generateCert = function () {
+    var indFirst  = document.getElementById('indFirst').value.trim();
+    var indLast   = document.getElementById('indLast').value.trim();
+    var ecFirst   = document.getElementById('ecFirst').value.trim();
+    var ecLast    = document.getElementById('ecLast').value.trim();
+    var effDate   = document.getElementById('effDate').value;
+    var authName  = document.getElementById('authName').value.trim();
+
+    var err = document.getElementById('errorBanner');
+    err.style.display = 'none';
+
+    if (!indFirst || !indLast || !ecFirst || !ecLast || !window._rel || !effDate || !authName) {
+      err.textContent = 'Please fill in all required fields and select a relationship.';
+      err.style.display = 'block';
+      err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    var indName = indFirst + ' ' + indLast;
+    var ecName  = ecFirst + ' ' + ecLast;
+    var authTitle = document.getElementById('authTitle').value.trim();
+    var expDate   = document.getElementById('expDate').value;
+    var issued    = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    document.getElementById('c-ind').textContent      = indName;
+    document.getElementById('c-ec').textContent       = ecName;
+    document.getElementById('c-indName').textContent  = indName;
+    document.getElementById('c-ecName').textContent   = ecName;
+    document.getElementById('c-rel').textContent      = window._rel;
+    document.getElementById('c-ref').textContent      = ref;
+    document.getElementById('c-eff').textContent      = fmtDate(effDate);
+    document.getElementById('c-exp').textContent      = expDate ? fmtDate(expDate) : 'No expiration';
+    document.getElementById('c-authName').textContent = authName;
+    document.getElementById('c-authTitle').textContent = authTitle || '';
+    document.getElementById('c-issued').textContent   = issued;
+    document.getElementById('certRefDisplay').textContent = ref;
+    document.getElementById('c-footerRef').textContent = ref;
+
+    if (window._sigSrc) {
+      var img = document.getElementById('c-sigImg');
+      img.src = window._sigSrc;
+      img.style.display = 'block';
+    }
+
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('certView').style.display = 'block';
+    window.scrollTo(0, 0);
+  };
+
+  window.goBack = function () {
+    document.getElementById('certView').style.display = 'none';
+    document.getElementById('formView').style.display = 'block';
+  };
+})();
+</script>
+</body>
+</html>

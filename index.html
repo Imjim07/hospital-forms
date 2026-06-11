@@ -134,9 +134,9 @@
 
     <div class="section">
       <p class="section-heading">Individual details</p>
-      <div class="row two">
-        <div class="field"><label>First name <span>*</span></label><input type="text" id="indFirst" placeholder="First name" /></div>
-        <div class="field"><label>Last name <span>*</span></label><input type="text" id="indLast" placeholder="Last name" /></div>
+      <div class="field">
+        <label>Full name</label>
+        <div style="font-size:13.5px;color:#111;background:#f9fafb;border:0.5px solid #e5e7eb;border-radius:6px;padding:8px 10px;font-weight:500;">Oliver Serrano</div>
       </div>
     </div>
 
@@ -165,10 +165,10 @@
 
     <div class="section">
       <p class="section-heading">Authorization details</p>
-      <div class="row two">
-        <div class="field"><label>Effective date <span>*</span></label><input type="date" id="effDate" /></div>
-        <div class="field"><label>Expiration date</label><input type="date" id="expDate" /></div>
+      <div class="row one">
+        <div class="field"><label>Date of issue <span>*</span></label><input type="date" id="effDate" /></div>
       </div>
+      <div class="notice" style="margin-top:-4px;margin-bottom:14px;font-size:11.5px;">This certificate is valid for <strong>30 days</strong> from the date of issue and will automatically expire thereafter.</div>
       <div class="row two">
         <div class="field"><label>Approving authority name <span>*</span></label><input type="text" id="authName" placeholder="Full name of approving officer" /></div>
         <div class="field"><label>Approving authority title</label><input type="text" id="authTitle" placeholder="e.g. Facilities Manager" /></div>
@@ -189,9 +189,13 @@
   <!-- CERTIFICATE VIEW -->
   <div id="certView">
 
-    <div class="cert-actions">
-      <button class="cert-btn primary" onclick="window.print()">&#128438; Save / Print as PDF</button>
-      <button class="cert-btn secondary" onclick="goBack()">&#8592; Edit details</button>
+    <div class="cert-actions" style="align-items:center;background:#fff;border:0.5px solid #c8d8d2;border-radius:10px;padding:16px 20px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#003F2D;margin-bottom:3px;">Certificate ready</div>
+        <div style="font-size:12px;color:#6b7280;">Review the certificate below, then save or print as PDF.</div>
+      </div>
+      <button class="cert-btn secondary" onclick="goBack()">&#8592; Edit</button>
+      <button class="cert-btn primary" onclick="window.print()">&#128438; Save / Print PDF</button>
     </div>
 
     <div class="certificate">
@@ -233,11 +237,11 @@
             <div class="cert-field-val" id="c-ref"></div>
           </div>
           <div class="cert-field">
-            <div class="cert-field-label">Effective date</div>
+            <div class="cert-field-label">Date of issue</div>
             <div class="cert-field-val" id="c-eff"></div>
           </div>
           <div class="cert-field">
-            <div class="cert-field-label">Expiration date</div>
+            <div class="cert-field-label">Valid until</div>
             <div class="cert-field-val" id="c-exp"></div>
           </div>
         </div>
@@ -348,6 +352,8 @@
   }
   tick(); setInterval(tick, 30000);
 
+  document.getElementById('effDate').value = new Date().toISOString().split('T')[0];
+
   window._rel = '';
 
   window.setRel = function (btn) {
@@ -363,8 +369,6 @@
   }
 
   window.generateCert = function () {
-    var indFirst  = document.getElementById('indFirst').value.trim();
-    var indLast   = document.getElementById('indLast').value.trim();
     var ecFirst   = document.getElementById('ecFirst').value.trim();
     var ecLast    = document.getElementById('ecLast').value.trim();
     var effDate   = document.getElementById('effDate').value;
@@ -373,18 +377,21 @@
     var err = document.getElementById('errorBanner');
     err.style.display = 'none';
 
-    if (!indFirst || !indLast || !ecFirst || !ecLast || !window._rel || !effDate || !authName) {
+    if (!ecFirst || !ecLast || !window._rel || !effDate || !authName) {
       err.textContent = 'Please fill in all required fields and select a relationship.';
       err.style.display = 'block';
       err.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
-    var indName = indFirst + ' ' + indLast;
-    var ecName  = ecFirst + ' ' + ecLast;
+    var indName   = 'Oliver Serrano';
+    var ecName    = ecFirst + ' ' + ecLast;
     var authTitle = document.getElementById('authTitle').value.trim();
-    var expDate   = document.getElementById('expDate').value;
-    var issued    = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+    var issuedObj = new Date(effDate + 'T00:00:00');
+    var expObj    = new Date(issuedObj);
+    expObj.setDate(expObj.getDate() + 30);
+    var issued    = issuedObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+    var expDate   = expObj.toISOString().split('T')[0];
 
     document.getElementById('c-ind').textContent      = indName;
     document.getElementById('c-ec').textContent       = ecName;
@@ -393,7 +400,7 @@
     document.getElementById('c-rel').textContent      = window._rel;
     document.getElementById('c-ref').textContent      = ref;
     document.getElementById('c-eff').textContent      = fmtDate(effDate);
-    document.getElementById('c-exp').textContent      = expDate ? fmtDate(expDate) : 'No expiration';
+    document.getElementById('c-exp').textContent      = fmtDate(expDate);
     document.getElementById('c-authName').textContent = authName;
     document.getElementById('c-authTitle').textContent = authTitle || '';
     document.getElementById('c-issued').textContent   = issued;

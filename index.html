@@ -170,9 +170,8 @@
         <div class="field"><label>Date of issue <span>*</span></label><input type="date" id="effDate" /></div>
       </div>
       <div class="notice" style="margin-top:-4px;margin-bottom:14px;font-size:11.5px;">This certificate is valid for <strong>30 days</strong> from the date of issue and will automatically expire thereafter.</div>
-      <div class="row two">
-        <div class="field"><label>Approving authority name <span>*</span></label><input type="text" id="authName" placeholder="Full name of approving officer" /></div>
-        <div class="field"><label>Approving authority title</label><input type="text" id="authTitle" placeholder="e.g. Facilities Manager" /></div>
+      <div class="row one">
+        <div class="field"><label>Approving authority name <span>*</span></label><input type="text" id="authName" placeholder="Full name of approving officer" autocomplete="off" /></div>
       </div>
     </div>
 
@@ -250,21 +249,19 @@
         <div class="cert-bottom">
           <div class="cert-sig">
             <div class="cert-sig-line" style="position:relative; height:48px; display:flex; align-items:center; justify-content:center;">
-              <svg id="c-sigSvg" viewBox="0 0 180 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:160px;height:48px;position:absolute;">
-                <path d="M 14 52 C 15 38, 18 20, 26 12 C 34 4, 40 16, 38 30 C 36 40, 32 50, 38 42 C 46 32, 52 18, 62 20 C 70 22, 68 40, 76 34 C 82 28, 86 16, 96 18 C 106 20, 104 38, 114 30"
+              <svg id="c-sigSvg" viewBox="-5 -6 200 82" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:160px;height:48px;position:absolute;">
+                <path d="M 65 12 C 50 4, 26 6, 12 24 C -2 44, 6 66, 26 70 C 46 74, 64 58, 72 44 C 78 32, 80 20, 88 18"
+                  stroke="#003F2D" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 88 18 C 100 8, 112 14, 114 28 C 116 42, 112 54, 122 44 C 132 34, 136 16, 148 20 C 158 24, 158 42, 166 34"
                   stroke="#003F2D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M 114 30 C 124 20, 140 12, 158 20 C 166 24, 170 36, 174 30"
-                  stroke="#003F2D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M 22 13 C 24 5, 30 2, 33 8"
-                  stroke="#003F2D" stroke-width="1.4" stroke-linecap="round"/>
-                <circle cx="100" cy="10" r="2" fill="#003F2D"/>
-                <path d="M 12 56 C 70 59, 145 59, 176 53"
-                  stroke="#003F2D" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+                <path d="M 166 34 C 176 24, 186 20, 190 28"
+                  stroke="#003F2D" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M 63 12 C 68 2, 76 -2, 78 6"
+                  stroke="#003F2D" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
             </div>
             <div class="cert-sig-label">Signature of approving authority</div>
             <div class="cert-sig-name" id="c-authName"></div>
-            <div class="cert-sig-name" style="color:#9ca3af;font-size:11px;" id="c-authTitle"></div>
           </div>
 
           <div class="cert-seal">
@@ -365,7 +362,6 @@
 
     var indName   = 'Oliver Serrano';
     var ecName    = 'Amy Castellano';
-    var authTitle = document.getElementById('authTitle').value.trim();
     var issuedObj = new Date(effDate + 'T00:00:00');
     var expObj    = new Date(issuedObj);
     expObj.setDate(expObj.getDate() + 30);
@@ -381,7 +377,6 @@
     document.getElementById('c-eff').textContent      = fmtDate(effDate);
     document.getElementById('c-exp').textContent      = fmtDate(expDate);
     document.getElementById('c-authName').textContent = authName;
-    document.getElementById('c-authTitle').textContent = authTitle || '';
     document.getElementById('c-issued').textContent   = issued;
     document.getElementById('certRefDisplay').textContent = ref;
     document.getElementById('c-footerRef').textContent = ref;
